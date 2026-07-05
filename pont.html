@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0e1219">
+<title>소리 · Le pont — démo</title>
+<style>
+  :root{--ground:#0e1219;--ground2:#080b11;--panel:#161d2b;--panel2:#1c2536;--line:#28324a;
+    --ink:#ece4d6;--dim:#9aa3b6;--muted:#6a7489;--amber:#f0a04b;--amber-s:#f6c684;
+    --ok:#82cd93;--warn:#e0b15c;--err:#e58a8a;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    --ko:"Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",sans-serif;}
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--ground2);color:var(--ink);font-family:var(--sans)}
+  body{background:radial-gradient(120% 60% at 78% -8%,rgba(240,160,75,.10),transparent 60%),var(--ground)}
+  #app{max-width:600px;margin:0 auto;min-height:100dvh;padding:16px clamp(16px,5vw,26px) 40px}
+  h1{font-size:1.05rem;letter-spacing:.02em;margin:0 0 2px}
+  .sub{color:var(--dim);font-size:.85rem;margin:0 0 16px;line-height:1.4}
+  .row{display:flex;gap:8px;flex-wrap:wrap}
+  .seg{display:flex;gap:6px;margin:0 0 14px}
+  .seg button{flex:1;font:inherit;font-weight:600;color:var(--dim);background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:9px;cursor:pointer}
+  .seg button.on{color:#fff;border-color:var(--amber);background:#212b3e}
+  .npc{font-family:var(--ko);font-size:1.35rem;color:#fff;border-left:2px solid var(--line);padding-left:14px;margin:4px 0 4px}
+  .npcfr{color:var(--dim);font-size:.85rem;margin:0 0 16px}
+  .deconly{font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin:0 0 10px}
+  .choice{border:1px solid var(--line);border-left-width:4px;border-radius:12px;background:#12182360;padding:12px 14px;margin-bottom:11px;cursor:pointer;transition:.15s}
+  .choice:hover{background:#1a2130}
+  .choice.ok{border-left-color:var(--ok)} .choice.warn{border-left-color:var(--warn)} .choice.no{border-left-color:var(--err)}
+  .choice .kr{font-family:var(--ko);font-size:1.3rem;color:#fff}
+  .choice .meta{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:6px}
+  .chip{font-size:.74rem;font-weight:700;padding:3px 9px;border-radius:999px}
+  .chip.ok{color:var(--ok);background:rgba(130,205,147,.12)}
+  .chip.warn{color:var(--warn);background:rgba(224,177,92,.12)}
+  .chip.no{color:var(--err);background:rgba(229,138,138,.12)}
+  .req{font-size:.78rem;color:var(--dim)}
+  .req b{color:var(--amber-s);font-family:var(--ko);font-weight:400}
+  .req .miss{color:var(--err);font-family:var(--ko)}
+  .panel{border:1px solid var(--line);border-radius:12px;background:#12182360;padding:14px;margin-top:18px}
+  .panel h2{font-size:.9rem;margin:0 0 8px;color:var(--amber-s)}
+  .panel p{color:var(--dim);font-size:.84rem;line-height:1.5;margin:0 0 12px}
+  .btn{font:inherit;font-weight:600;color:var(--ink);background:var(--panel2);border:1px solid var(--line);border-radius:11px;padding:12px 14px;cursor:pointer}
+  .btn:hover{border-color:#3a4a66}
+  .out{margin-top:14px;min-height:1.3em;color:var(--ink);font-size:.95rem}
+  .out .g{color:var(--ok)} .out .w{color:var(--warn)} .out .b{color:var(--err)}
+  .score{font-size:.8rem;color:var(--dim);margin-top:6px}
+</style>
+</head>
+<body>
+<div id="app">
+  <h1>Le pont — l'app ⇄ l'histoire</h1>
+  <p class="sub">Chaque réponse porte <b>ce qu'elle exige</b>. Sa couleur dépend de <b>ton score dans l'app</b>.
+    🟢 prêt · 🟠 risqué · 🔴 pas prêt. Tu peux tenter quand même, ou aller <b>réviser</b> et revenir.</p>
+
+  <div class="seg" id="seg">
+    <button data-s="arrivee" class="on">Scène 1 · Arrivée</button>
+    <button data-s="taxi">Scène (plus tard) · Taxi</button>
+  </div>
+
+  <div class="deconly">— décision · aucune aide —</div>
+  <div class="npc" id="npc"></div>
+  <div class="npcfr" id="npcfr"></div>
+  <div id="choices"></div>
+  <div class="out" id="out"></div>
+
+  <div class="panel">
+    <h2>📚 Ton apprentissage (le score)</h2>
+    <p>Voilà ce que l'app t'a fait maîtriser. Révise pour monter ton score — regarde les réponses changer de couleur.</p>
+    <div class="row">
+      <button class="btn" id="revtaxi">📚 Réviser le vocabulaire du taxi</button>
+      <button class="btn" id="reset">↺ Redevenir débutant</button>
+    </div>
+    <div class="score" id="score"></div>
+  </div>
+</div>
+<script>
+(function(){
+  "use strict";
+  // SCORE DU JOUEUR = maîtrise par mot (stade 0-5, comme l'app SR). Absent = 0.
+  const START={ '안녕하세요':5,'감사합니다':5,'네':4,'아니요':4 };   // un débutant : juste les salutations
+  let mastery=Object.assign({},START);
+  const KNOWN=3;   // un mot est "utilisable" à partir du stade 3
+
+  const SCENES={
+    arrivee:{ npc:'안녕하세요.', fr:'Quelqu’un te salue dans le hall.', choices:[
+      {kr:'안녕하세요.', req:['안녕하세요'], note:'Tu réponds au salut.'},
+      {kr:'아니요.', req:['아니요'], note:'Tu sais le dire… mais « non » à un bonjour, c’est étrange.'},
+      {kr:'— rester muet —', req:[], note:'Toujours possible. Mais tu passes pour distant.'}
+    ]},
+    taxi:{ npc:'어디로 가세요?', fr:'Le chauffeur attend ta destination.', choices:[
+      {kr:'홍대까지 가 주세요.', req:['홍대','까지','가다','주다'], note:'La formule juste.'},
+      {kr:'홍대에서 왔어요.', req:['홍대','에서','오다'], note:'Piège : ça dit « je viens de Hongdae ».'},
+      {kr:'홍대 가.', req:['홍대','가다'], note:'Compréhensible, mais ton brutal (banmal).'}
+    ]}
+  };
+  let cur='arrivee';
+
+  function level(req){                       // -> {cls,label,missing[]}
+    if(!req.length) return {cls:'ok',label:'🟢 toujours possible',missing:[]};
+    const missing=req.filter(w=>(mastery[w]||0)<KNOWN);
+    if(missing.length===0) return {cls:'ok',label:'🟢 prêt',missing};
+    if(missing.length<=Math.floor(req.length/2)) return {cls:'warn',label:'🟠 risqué',missing};
+    return {cls:'no',label:'🔴 pas prêt',missing};
+  }
+
+  function render(){
+    const sc=SCENES[cur];
+    document.getElementById('npc').textContent=sc.npc;
+    document.getElementById('npcfr').textContent=sc.fr;
+    const box=document.getElementById('choices'); box.innerHTML='';
+    sc.choices.forEach(ch=>{
+      const lv=level(ch.req);
+      const reqHtml = ch.req.length
+        ? 'exige : '+ch.req.map(w=>{const ok=(mastery[w]||0)>=KNOWN;return `<b class="${ok?'':'miss'}">${w}</b>`}).join(' · ')
+        : 'n’exige aucun mot';
+      const el=document.createElement('div');
+      el.className='choice '+lv.cls;
+      el.innerHTML=`<div class="kr">${ch.kr}</div>
+        <div class="meta"><span class="req">${reqHtml}</span><span class="chip ${lv.cls}">${lv.label}</span></div>`;
+      el.onclick=()=>attempt(ch,lv);
+      box.appendChild(el);
+    });
+    document.getElementById('out').textContent='';
+    const total=Object.keys(mastery).filter(w=>mastery[w]>=KNOWN).length;
+    document.getElementById('score').textContent='Mots maîtrisés : '+
+      Object.keys(mastery).filter(w=>mastery[w]>=KNOWN).map(w=>w).join(', ');
+  }
+
+  function attempt(ch,lv){
+    const out=document.getElementById('out');
+    if(lv.cls==='ok') out.innerHTML=`<span class="g">✓ Tu le sors sans hésiter.</span> ${ch.note}`;
+    else if(lv.cls==='warn') out.innerHTML=`<span class="w">⚠ Tu tentes… ça passe de justesse, ou pas.</span> Tu n’es pas sûr de : ${lv.missing.join(', ')}.`;
+    else out.innerHTML=`<span class="b">✕ Tu te lances quand même — et ça sort en charabia.</span> Il te manque : ${lv.missing.join(', ')}. Tu peux aller les réviser, puis revenir.`;
+  }
+
+  document.getElementById('seg').addEventListener('click',e=>{
+    const b=e.target.closest('button'); if(!b) return;
+    cur=b.dataset.s;
+    [...document.querySelectorAll('#seg button')].forEach(x=>x.classList.toggle('on',x===b));
+    render();
+  });
+  document.getElementById('revtaxi').onclick=()=>{
+    ['홍대','까지','가다','주다','에서','오다'].forEach(w=>mastery[w]=Math.min(5,(mastery[w]||0)+1));
+    render();
+    document.getElementById('out').innerHTML='<span class="w">📚 Tu as révisé. Ton score monte — regarde les couleurs bouger.</span>';
+  };
+  document.getElementById('reset').onclick=()=>{ mastery=Object.assign({},START); render(); };
+
+  render();
+})();
+</script>
+</body>
+</html>
