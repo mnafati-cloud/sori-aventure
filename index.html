@@ -5,8 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0e1219">
 <title>소리 · Aventure — démo</title>
-</head>
-<body>
 <style>
   :root{
     --ground:#0e1219; --ground2:#080b11; --panel:#161d2b; --panel2:#1c2536;
@@ -19,297 +17,360 @@
   }
   *{box-sizing:border-box}
   html,body{margin:0;background:var(--ground2);color:var(--ink);font-family:var(--sans)}
-  body{
-    background:
+  body{background:
       radial-gradient(120% 60% at 78% -8%, rgba(240,160,75,.10), transparent 60%),
       radial-gradient(120% 55% at 12% 108%, rgba(87,201,192,.07), transparent 60%),
-      var(--ground);
-    -webkit-font-smoothing:antialiased;
-  }
+      var(--ground);-webkit-font-smoothing:antialiased}
   #app{max-width:600px;margin:0 auto;min-height:100dvh;display:flex;flex-direction:column;
-    padding:0 clamp(16px,5vw,26px) 120px;position:relative}
-  /* header */
+    padding:0 clamp(16px,5vw,26px) 60px;position:relative}
   #bar{position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;
-    padding:14px 2px 12px;background:linear-gradient(var(--ground) 62%,transparent);
-    backdrop-filter:blur(2px)}
-  .chap{font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);font-weight:600}
-  .aff{display:flex;align-items:center;gap:7px;font-family:var(--ko);font-size:.82rem;color:var(--ink-dim);
-    opacity:0;transition:opacity .5s}
+    gap:12px;padding:14px 2px 12px;background:linear-gradient(var(--ground) 62%,transparent);backdrop-filter:blur(2px)}
+  .chap{font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);font-weight:600;white-space:nowrap}
+  .prog{flex:1;height:3px;background:#1b2230;border-radius:2px;overflow:hidden;max-width:140px}
+  .prog>i{display:block;height:100%;width:0;background:var(--amber);transition:width .5s}
+  .aff{display:flex;align-items:center;gap:6px;font-family:var(--ko);font-size:.82rem;color:var(--ink-dim);opacity:0;transition:opacity .5s}
   .aff.on{opacity:1}
   .aff .heart{color:var(--rose);transition:transform .35s,filter .35s;filter:saturate(.5) brightness(.7)}
-  .aff.warm .heart{filter:none}
-  .aff.pulse .heart{transform:scale(1.5)}
-  /* stage */
+  .aff.warm .heart{filter:none}.aff.pulse .heart{transform:scale(1.5)}
   #stage{flex:1;padding-top:6px}
   .beat{animation:rise .55s cubic-bezier(.2,.7,.2,1) both}
   @keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  @keyframes pop{0%{transform:scale(.4);opacity:0}60%{transform:scale(1.15)}100%{transform:scale(1);opacity:1}}
   p.narr{font-size:1.06rem;line-height:1.62;color:var(--ink);margin:0 0 1.05em;max-width:34em}
-  p.stage{font-style:italic;color:var(--ink-dim);margin:0 0 1.05em;font-size:.98rem}
-  .koline{font-family:var(--ko);text-align:center;color:var(--amber-soft);font-size:1.15rem;
-    letter-spacing:.02em;margin:.2em 0 1.2em;opacity:.92}
-  /* dialogue */
+  p.stage{font-style:italic;color:var(--ink-dim);margin:0 0 1.05em}
   .npc{display:flex;gap:12px;margin:0 0 1.15em;align-items:flex-start}
-  .npc .who{flex:0 0 auto;font-family:var(--ko);font-size:.7rem;letter-spacing:.02em;color:var(--amber);
-    background:rgba(240,160,75,.10);border:1px solid rgba(240,160,75,.25);border-radius:999px;
-    padding:5px 10px;margin-top:4px;white-space:nowrap}
-  .npc .line{font-family:var(--ko);font-size:1.34rem;line-height:1.5;color:#fff;
-    border-left:2px solid var(--line);padding-left:14px}
-  /* tappable known word */
-  button.k{font:inherit;color:var(--amber-soft);background:none;border:0;padding:0;cursor:pointer;
-    font-family:var(--ko);border-bottom:1px dotted rgba(246,198,132,.6)}
-  button.k:active{color:#fff}
-  /* controls */
+  .npc .who{flex:0 0 auto;font-family:var(--ko);font-size:.7rem;color:var(--amber);
+    background:rgba(240,160,75,.10);border:1px solid rgba(240,160,75,.25);border-radius:999px;padding:5px 10px;margin-top:4px;white-space:nowrap}
+  .npc .line{font-family:var(--ko);font-size:1.34rem;line-height:1.5;color:#fff;border-left:2px solid var(--line);padding-left:14px}
+  button.k{font:inherit;color:var(--amber-soft);background:none;border:0;padding:0;cursor:pointer;font-family:var(--ko);border-bottom:1px dotted rgba(246,198,132,.6)}
+  /* signs row (décor: illisible -> lisible) */
+  .signs{display:flex;gap:10px;flex-wrap:wrap;margin:0 0 1.2em}
+  .sign{font-family:var(--ko);font-size:1.5rem;padding:10px 14px;border:1px solid var(--line);border-radius:10px;background:#12182360;color:#cfd6e2;transition:.5s}
+  .sign.locked{filter:blur(1.5px) saturate(.3) brightness(.7);color:#7f8798}
+  .sign.read{border-color:rgba(240,160,75,.5);color:#fff;box-shadow:0 0 18px rgba(240,160,75,.18)}
+  /* decode mini-jeu */
+  .decode{border:1px solid var(--line);border-radius:16px;background:#12172160;padding:18px 16px 16px;animation:rise .5s both}
+  .decode .head{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+  .decode .icon{font-size:1.9rem}
+  .decode .meta{flex:1}
+  .decode .mean{color:var(--ink-dim);font-size:.9rem}
+  .decode .say{font-family:var(--ko);color:var(--amber-soft);font-size:1.05rem}
+  .decode .spk{background:none;border:1px solid var(--line);color:var(--amber-soft);border-radius:10px;padding:8px 12px;cursor:pointer;font-size:1.1rem}
+  .sylrow{display:flex;gap:10px;justify-content:center;margin:6px 0 18px;min-height:70px;align-items:center}
+  .syl{width:62px;height:62px;border:1.5px dashed #38425c;border-radius:12px;display:flex;align-items:center;justify-content:center;
+    font-family:var(--ko);font-size:2.1rem;color:#fff}
+  .syl.full{border-style:solid;border-color:var(--amber);background:rgba(240,160,75,.08);animation:pop .4s both}
+  .syl .plus{color:var(--muted);font-size:1.2rem;font-family:var(--sans)}
+  .tiles{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+  .tile{min-width:52px;padding:8px 6px 6px;border:1px solid var(--line);border-radius:11px;background:var(--panel2);cursor:pointer;text-align:center;transition:.15s}
+  .tile .g{font-family:var(--ko);font-size:1.5rem;color:#fff;display:block;line-height:1.1}
+  .tile .s{font-size:.72rem;color:var(--ink-dim)}
+  .tile.next{border-color:var(--amber);box-shadow:0 0 0 2px rgba(240,160,75,.15)}
+  .tile.done{opacity:.35;pointer-events:none}
+  .tile.buzz{animation:buzz .3s}
+  @keyframes buzz{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+  .win{text-align:center;margin-top:14px;animation:rise .4s both}
+  .win .word{font-family:var(--ko);font-size:2.4rem;color:#fff}
+  .win .rm{color:var(--amber-soft);letter-spacing:.03em}
+  .win .mn{color:var(--ink-dim);margin-top:2px}
+  /* choices */
   #act{margin-top:18px;display:flex;flex-direction:column;gap:11px}
-  .btn{font:inherit;font-weight:600;color:var(--ink);background:var(--panel2);
-    border:1px solid var(--line);border-radius:13px;padding:15px 16px;text-align:left;cursor:pointer;
-    transition:border-color .18s,background .18s,transform .05s}
-  .btn:hover{border-color:#3a4a66;background:#212b3e}
-  .btn:active{transform:translateY(1px)}
+  .btn{font:inherit;font-weight:600;color:var(--ink);background:var(--panel2);border:1px solid var(--line);border-radius:13px;
+    padding:15px 16px;text-align:left;cursor:pointer;transition:border-color .18s,background .18s,transform .05s}
+  .btn:hover{border-color:#3a4a66;background:#212b3e}.btn:active{transform:translateY(1px)}
   .btn:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
   .btn.center{text-align:center;color:var(--amber-soft)}
-  .choice{display:flex;flex-direction:column;gap:2px}
-  .choice .ko{font-family:var(--ko);font-size:1.24rem;color:#fff;line-height:1.35}
-  .deconly{font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;color:var(--err);
-    opacity:.75;text-align:center;margin:2px 0 4px}
-  .prompt{color:var(--ink-dim);text-align:center;margin:0 0 4px;font-size:.98rem}
-  /* charabia / consequence panel */
-  .fallout{border:1px solid var(--line);border-left:3px solid var(--err);background:rgba(229,138,138,.06);
-    border-radius:11px;padding:14px 15px;animation:rise .3s both}
+  .btn[disabled]{opacity:.4;pointer-events:none}
+  .choice .ko{font-family:var(--ko);font-size:1.24rem;color:#fff;display:block}
+  .find{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+  .find .btn{text-align:center}.find .btn .ko{font-size:1.5rem}
+  .deconly{font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;color:var(--err);opacity:.75;text-align:center;margin:2px 0 4px}
+  .prompt{color:var(--ink-dim);text-align:center;margin:0 0 4px}
+  .fallout{border:1px solid var(--line);border-left:3px solid var(--err);background:rgba(229,138,138,.06);border-radius:11px;padding:14px 15px;animation:rise .3s both}
   .fallout.cold{border-left-color:var(--muted);background:rgba(120,130,150,.06)}
-  .fallout .say{font-style:italic;color:#fff;margin:0 0 8px;font-size:1.05rem}
-  .fallout .cons{color:var(--ink-dim);margin:0 0 12px;line-height:1.5}
-  /* title & end cards */
-  .card{text-align:center;padding:12vh 6px 6vh;animation:rise .7s both}
-  .card .mark{font-family:var(--ko);font-size:1rem;letter-spacing:.4em;color:var(--amber);opacity:.8;margin-bottom:26px}
+  .fallout .say{font-style:italic;color:#fff;margin:0 0 8px}.fallout .cons{color:var(--ink-dim);margin:0 0 12px;line-height:1.5}
+  .card{text-align:center;padding:11vh 6px 5vh;animation:rise .7s both}
+  .card .mark{font-family:var(--ko);font-size:1rem;letter-spacing:.4em;color:var(--amber);opacity:.8;margin-bottom:22px}
   .card .epi{font-family:var(--ko);font-size:1.05rem;color:var(--ink-dim);letter-spacing:.1em}
-  .card h1{font-family:var(--serif);font-weight:600;font-size:clamp(2.1rem,9vw,2.9rem);
-    margin:.15em 0 .1em;text-wrap:balance;letter-spacing:.01em}
-  .card .note{color:var(--ok);font-size:.9rem;margin:20px auto 30px;max-width:22em;line-height:1.5}
+  .card h1{font-family:var(--serif);font-weight:600;font-size:clamp(2.1rem,9vw,2.9rem);margin:.15em 0 .1em;text-wrap:balance}
+  .card .note{color:var(--ok);font-size:.92rem;margin:20px auto 30px;max-width:24em;line-height:1.55}
   .card .body{color:var(--ink-dim);max-width:24em;margin:0 auto 28px;line-height:1.6}
-  .card .btn{display:inline-block;min-width:190px;text-align:center}
-  .rule{width:44px;height:1px;background:var(--line);margin:0 auto 26px}
-  /* translation sheet */
-  #sheet{position:fixed;left:0;right:0;bottom:0;z-index:20;transform:translateY(120%);
-    transition:transform .28s cubic-bezier(.2,.7,.2,1);padding:0 12px calc(14px + env(safe-area-inset-bottom))}
+  .rule{width:44px;height:1px;background:var(--line);margin:0 auto 24px}
+  #sheet{position:fixed;left:0;right:0;bottom:0;z-index:20;transform:translateY(120%);transition:transform .28s cubic-bezier(.2,.7,.2,1);padding:0 12px calc(14px + env(safe-area-inset-bottom))}
   #sheet.up{transform:none}
-  #sheet .inner{max-width:576px;margin:0 auto;background:var(--panel);border:1px solid var(--line);
-    border-radius:15px;padding:14px 16px;display:flex;align-items:center;gap:14px;
-    box-shadow:0 -10px 40px rgba(0,0,0,.5)}
-  #sheet .kw{font-family:var(--ko);font-size:1.5rem;color:#fff}
-  #sheet .fr{color:var(--ink-dim);flex:1}
+  #sheet .inner{max-width:576px;margin:0 auto;background:var(--panel);border:1px solid var(--line);border-radius:15px;padding:14px 16px;display:flex;align-items:center;gap:14px;box-shadow:0 -10px 40px rgba(0,0,0,.5)}
+  #sheet .kw{font-family:var(--ko);font-size:1.5rem;color:#fff}#sheet .fr{color:var(--ink-dim);flex:1}
   #sheet .x{color:var(--muted);background:none;border:0;font-size:1.3rem;cursor:pointer;padding:4px}
-  /* toast */
-  #toast{position:fixed;left:50%;top:64px;transform:translate(-50%,-16px);z-index:30;opacity:0;
-    transition:opacity .3s,transform .3s;font-family:var(--ko);font-size:.9rem;color:var(--rose);
-    background:var(--panel);border:1px solid rgba(230,135,158,.4);border-radius:999px;padding:8px 16px;
-    pointer-events:none}
+  #toast{position:fixed;left:50%;top:64px;transform:translate(-50%,-16px);z-index:30;opacity:0;transition:.3s;font-family:var(--ko);font-size:.9rem;color:var(--rose);background:var(--panel);border:1px solid rgba(230,135,158,.4);border-radius:999px;padding:8px 16px;pointer-events:none}
   #toast.on{opacity:1;transform:translate(-50%,0)}
-  body.tense #app{transition:filter .6s}
-  body.tense #stage{filter:saturate(.75)}
+  body.tense #stage{filter:saturate(.75);transition:filter .6s}
   @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
-
+</head>
+<body>
 <div id="app">
   <header id="bar">
     <div class="chap" id="chap"></div>
+    <div class="prog"><i id="progi"></i></div>
     <div class="aff" id="aff"><span>지호</span><span class="heart">♥</span></div>
   </header>
   <main id="stage"></main>
   <div id="act"></div>
 </div>
-
 <div id="sheet"><div class="inner"><span class="kw"></span><span class="fr"></span><button class="x" aria-label="Fermer">✕</button></div></div>
 <div id="toast"></div>
 
 <script>
 (function(){
   "use strict";
-  const stage=document.getElementById('stage'), act=document.getElementById('act'),
-        chapEl=document.getElementById('chap'), affEl=document.getElementById('aff'),
-        sheet=document.getElementById('sheet'), toast=document.getElementById('toast');
-  const state={aff:{jiho:0}, jihoSeen:false};
+  const $=(s)=>document.querySelector(s);
+  const stage=$('#stage'),act=$('#act'),chapEl=$('#chap'),progi=$('#progi'),
+        affEl=$('#aff'),sheet=$('#sheet'),toast=$('#toast');
+  const state={aff:{jiho:0}};
+  function speak(t){ try{ if(!window.speechSynthesis)return; const u=new SpeechSynthesisUtterance(t);
+    u.lang='ko-KR'; u.rate=.85; speechSynthesis.cancel(); speechSynthesis.speak(u);}catch(e){} }
 
-  // ---- data: chapitres 1 & 2 ----
-  // narr accepte *kr|fr* = mot connu, révélation au tap (jamais traduit en ligne).
-  const N=(t)=>({t:'narr',h:t}), ST=(t)=>({t:'stage',h:t}), KO=(t)=>({t:'ko',h:t}),
-        NPC=(w,l)=>({t:'npc',w:w,l:l});
+  // ---------- contenu ----------
+  const N=(t)=>({t:'narr',h:t}),ST=(t)=>({t:'stage',h:t}),NPC=(w,l)=>({t:'npc',w,l}),
+        SIGNS=(a,read)=>({t:'signs',a,read:read||[]});
+  // syllabes: [{c:'택', tiles:[['ㅌ','t'],['ㅐ','è'],['ㄱ','k']]}, ...]
+  const READ=(icon,mean,roman,syl,word)=>({t:'read',icon,mean,roman,syl,word});
+
   const S={
-    title1:{card:1,mark:'소리',epi:'제1화',title:'Arrivée',
-      note:'🟢 Chapitre d’ouverture — jouable même sans rien connaître.',go:'c1_1',cta:'시작 · Commencer'},
-    c1_1:{blocks:[
-      N("Les portes de l’aéroport d’Incheon s’ouvrent sur la nuit. Presque minuit. Toi, une valise, et six mois devant toi."),
-      N("Sur un panneau lumineux, un seul mot que tu reconnais : *택시|taxi*. Tu suis la file.")
-    ],cont:'c1_2'},
-    c1_2:{blocks:[
-      ST("Un employé en gilet fluo te fait signe vers une file de voitures oranges."),
-      NPC('안내원',"안녕하세요! 택시, 여기요.")
-    ],cont:'c1_3'},
-    c1_3:{blocks:[
+    /* ===== CHAPITRE 0 — apprendre à LIRE ===== */
+    title0:{card:1,mark:'소리',epi:'제0화',title:'Arrivée',
+      note:'🟢 Tu ne sais pas encore lire le coréen — c’est normal. On commence exactement par là.',go:'z1',cta:'시작 · Commencer'},
+    z1:{p:.06,blocks:[
+      N("Minuit passé. Tu sors de l’avion, la valise à la main, dans un terminal immense de l’aéroport d’Incheon."),
+      N("Partout, des panneaux. Des flèches. Des mots. Et pas un seul que tu saches lire — juste des formes qui ne veulent rien dire."),
+      SIGNS(['택시','출구','화장실','지하철'])
+    ],cont:'z2'},
+    z2:{p:.14,blocks:[
+      N("Tu es fatigué·e, seul·e, et il te faut un taxi. Dans l’avion, ta voisine te l’a répété : « pour un taxi, tu dis tèk-shi. »"),
+      N("Ce son-là, tu le connais. Il te suffit de le retrouver, écrit. Décode-le, lettre par lettre :")
+    ],read:READ('🚕','taxi','tèk-shi',
+      [{c:'택',tiles:[['ㅌ','t'],['ㅐ','è'],['ㄱ','k']]},{c:'시',tiles:[['ㅅ','sh'],['ㅣ','i']]}],'택시'),
+     after:'z3'},
+    z3:{p:.24,blocks:[
+      N("**택시.** Ton premier mot coréen lu — pas deviné, *lu*. Mais les taxis, c’est dehors. Il faut d’abord trouver la sortie."),
+      N("Ta voisine t’avait aussi soufflé celui-là : « sortie, ça se dit tchoul-gou. » Décode :")
+    ],read:READ('🚪','sortie','tchoul-gou',
+      [{c:'출',tiles:[['ㅊ','tch'],['ㅜ','ou'],['ㄹ','l']]},{c:'구',tiles:[['ㄱ','g'],['ㅜ','ou']]}],'출구'),
+     after:'z4'},
+    z4:{p:.34,blocks:[
+      N("Au bout du couloir, quatre panneaux éclairés. Tu ne connais que deux mots — mais deux, c’est assez.")
+    ],find:{prompt:'Où est la sortie ?',target:'출구',
+      options:['화장실','출구','지하철','택시']}},
+    z5:{p:.42,blocks:[
+      N("Tu pousses la porte. L’air froid de la nuit, l’odeur d’une ville inconnue. Une file de voitures oranges t’attend."),
+      SIGNS(['택시','출구'],['택시','출구']),
+      N("Il y a une heure, ces panneaux étaient des dessins. Maintenant, tu les *lis*. Ce n’est pas grand-chose. C’est énorme.")
+    ],cont:'end0'},
+    end0:{card:1,epi:'',title:'Fin du chapitre 0',note:'✅ Tu sais lire tes premiers panneaux : 택시, 출구.',
+      body:'Un taxi t’attend. Direction ton nouveau chez-toi.',go:'title1',cta:'Continuer'},
+
+    /* ===== CHAPITRE 1 — le taxi ===== */
+    title1:{card:1,mark:'소리',epi:'제1화',title:'En taxi',
+      note:'🟢 Tu sais lire l’essentiel. À toi de parler, maintenant.',go:'c1_1',cta:'시작 · Commencer'},
+    c1_1:{p:.5,blocks:[
       N("Tu montes à l’arrière. Le chauffeur, la soixantaine, croise ton regard dans le rétroviseur."),
       NPC('기사님',"어서 오세요. 어디로 가세요?"),
       N("Il attend ta destination. Ton logement est à *홍대|Hongdae*. Dans l’avion, tu avais répété : « … *까지|jusqu’à* *가 주세요|allez-y, s’il vous plaît*. »")
-    ],dec:{prompt:'À toi de répondre.',choices:[
-      {ko:'홍대까지 가 주세요.',r:'go',go:'c1_end'},
+    ],dec:{prompt:'Que dis-tu ?',choices:[
+      {ko:'홍대까지 가 주세요.',r:'go',go:'c1_2'},
       {ko:'홍대에서 왔어요.',r:'retry',say:'Je viens de Hongdae.',cons:'Le chauffeur fronce les sourcils. « …네? » La voiture ne bouge pas.'},
-      {ko:'홍대 가.',r:'branch',go:'c1_cold',cold:1,say:'Hongdae. Roule.',cons:'Un ton sec, deux mots. Il te fixe une seconde dans le rétro, sans un mot, et démarre. La course sera glaciale.'}
+      {ko:'홍대 가.',r:'branch',go:'c1_2',say:'Hongdae. Roule.',cons:'Un ton sec, deux mots. Il te fixe une seconde, sans un mot, et démarre. L’ambiance restera fraîche.'}
     ]}},
-    c1_end:{blocks:[
-      N("Le chauffeur hoche la tête. « 네, 홍대. » Le compteur s’allume, la voiture glisse dans la nuit."),
-      N("Trente minutes de néons et de ponts. La voiture s’arrête devant un immeuble étroit."),
+    c1_2:{p:.58,blocks:[
+      N("La voiture s’engage sur l’autoroute, les néons de Séoul défilent. Au feu rouge, le chauffeur te jette un œil, curieux."),
+      NPC('기사님',"한국 처음이에요?"),
+      N("Il te demande si c’est ta première fois en Corée.")
+    ],dec:{prompt:'Tu réponds…',choices:[
+      {ko:'네, 처음이에요.',r:'go',go:'c1_end'},
+      {ko:'네, 첫사랑이에요.',r:'retry',say:'Oui, c’est mon premier amour.',cons:'Le chauffeur éclate de rire. « 첫사랑?! » Tu as confondu 처음 (première fois) et 첫사랑 (premier amour).'}
+    ]}},
+    c1_end:{p:.66,blocks:[
+      N("« 여행 왔어요? » Il hoche la tête, sourit. Vingt minutes plus tard, la voiture s’arrête devant un immeuble étroit."),
       NPC('기사님',"다 왔어요."),
       N("Tu descends, la valise sur le trottoir. Un mot te vient, le seul qu’il faut : *감사합니다|merci*.")
     ],cont:'end1'},
-    c1_cold:{blocks:[
-      N("La course se fait en silence. Le chauffeur ne dira plus un mot jusqu’à l’immeuble étroit où il te dépose."),
-      N("Tu descends dans le froid. Premier soir, premier malentendu.")
-    ],cont:'end1'},
-    end1:{card:1,epi:'',title:'Fin du chapitre 1',note:'✅ 10 nouveaux mots ajoutés à ta révision.',
-      body:'Le 고시원 t’attend, tout en haut de l’escalier.',go:'title2',cta:'Continuer'},
+    end1:{card:1,epi:'',title:'Fin du chapitre 1',note:'✅ Tu as tenu ta première conversation en coréen.',
+      body:'Trois étages plus haut, une porte t’attend : la 302.',go:'title2',cta:'Continuer'},
 
-    title2:{card:1,mark:'소리',epi:'제2화',title:'Le premier soir',
-      note:'🟢 Tu connais déjà tout le nécessaire.',go:'c2_1',cta:'시작 · Commencer'},
-    c2_1:{blocks:[
+    /* ===== CHAPITRE 2 — le gosiwon ===== */
+    title2:{card:1,mark:'소리',epi:'제2화',title:'Le premier soir',go:'c2_1',cta:'시작 · Commencer'},
+    c2_1:{p:.74,blocks:[
       N("Tu montes trois étages dans un escalier qui sent le riz froid et la peinture. Porte 302. Tu cherches l’interrupteur à tâtons. *불|lumière*."),
-      N("La lumière grésille sur une pièce grande comme un placard : un lit qui touche les deux murs, une fenêtre, un bureau."),
-      KO("방이 좁아요.|La chambre est étroite."),
+      N("La lumière grésille sur une pièce grande comme un placard : un lit qui touche les deux murs, une fenêtre, un bureau. Rien d’autre."),
       N("Tu poses la valise. Dehors, une ville de dix millions d’inconnus. Six mois. Le silence bourdonne.")
     ],cont:'c2_2'},
-    c2_2:{blocks:[
+    c2_2:{p:.82,blocks:[
       ST("똑, 똑."),
-      N("On frappe. Tu ouvres. Dans le couloir, quelqu’un de ton âge, un torchon sur l’épaule, tenant une petite casserole à deux mains. Un sourire timide."),
+      N("On frappe. Tu ouvres. Dans le couloir, quelqu’un de ton âge, un torchon sur l’épaule, une petite casserole fumante entre les mains. Un sourire timide."),
       NPC('지호',"저기… 안녕하세요. 옆 방이에요."),
-      ST("De la vapeur, une odeur de bouillon épicé."),
       NPC('지호',"라면 먹을래요? 너무 많이 만들었어요."),
-      N("Ton ventre, lui, a déjà répondu.")
+      N("Une odeur de bouillon épicé. Ton ventre, lui, a déjà répondu.")
     ],dec:{prompt:'Que réponds-tu ?',choices:[
       {ko:'네, 좋아요. 감사합니다.',r:'go',go:'c2_meal',aff:1},
       {ko:'저는 라면이에요.',r:'retry',say:'Je suis un ramyeon.',cons:'지호 cligne des yeux, une seconde… puis se mord la lèvre pour ne pas rire. « …네? »'},
-      {ko:'아니요, 괜찮아요.',r:'branch',go:'c2_alone',cold:1,aff:-1,cons:'Tu refuses par timidité. 지호 hoche la tête, un peu déçu·e. « 아… 네. 그럼… 안녕히 주무세요. » La porte se referme.'}
+      {ko:'아니요, 괜찮아요.',r:'branch',go:'c2_alone',aff:-1,cons:'Tu refuses par timidité. 지호 hoche la tête, un peu déçu·e. « 아… 네. 그럼… 안녕히 주무세요. » La porte se referme.'}
     ]}},
-    c2_meal:{blocks:[
-      N("Le sourire de 지호 s’élargit, soulagé. « 아, 다행이다. » Il/elle pousse la porte du pied, s’assoit sur le coin du bureau, et pose la casserole fumante entre vous deux."),
-      N("지호 te tend une paire de baguettes, casse un œuf dans le bouillon, parle lentement, exprès, en te regardant comprendre."),
-      NPC('지호',"이거, 진짜 맛있어요. 여기 라면이 최고예요."),
-      N("C’est brûlant, c’est trop épicé, c’est parfait."),
+    c2_meal:{p:.92,blocks:[
+      N("Le sourire de 지호 s’élargit. « 아, 다행이다. » Il/elle s’assoit sur le coin du bureau et pose la casserole entre vous."),
+      N("지호 te tend des baguettes, casse un œuf dans le bouillon, parle lentement, exprès, en te regardant comprendre."),
       NPC('지호',"저는 지호예요. 옆 방. 뭐 필요하면… 그냥 노크하세요."),
       N("Pour la première fois depuis l’aéroport, la petite pièce semble moins froide. Dehors, la ville d’inconnus a un visage de moins.")
     ],cont:'end2'},
-    c2_alone:{blocks:[
-      N("Tu écoutes les pas de 지호 s’éloigner, la porte d’à côté se fermer. À travers le mur mince, le tintement discret d’une cuillère contre une casserole."),
+    c2_alone:{p:.92,blocks:[
+      N("Tu écoutes les pas de 지호 s’éloigner, la porte d’à côté se fermer. À travers le mur mince, le tintement d’une cuillère contre une casserole."),
       N("Tu manges tes biscuits d’avion, seul·e, dans le noir. Demain, peut-être, tu frapperas à ton tour.")
     ],cont:'end2'},
-    end2:{card:1,epi:'',title:'Fin de la démo',
-      body:'Chapitre 3 à venir — la supérette, seul·e dans la nuit de Séoul.',recap:1,go:'title1',cta:'↻ Rejouer depuis le début'}
+    end2:{card:1,epi:'',title:'Fin de la démo',recap:1,
+      body:'Chapitre 3 à venir — la supérette, seul·e dans la nuit de Séoul.',go:'title0',cta:'↻ Recommencer'}
   };
 
-  // ---- render helpers ----
-  function frag(t){ // *kr|fr* -> bouton au tap
-    return t.replace(/\*([^|*]+)\|([^*]+)\*/g,(m,kr,fr)=>
-      `<button class="k" data-kr="${kr}" data-fr="${fr}">${kr}</button>`);
-  }
-  function showSheet(kr,fr){
-    sheet.querySelector('.kw').textContent=kr; sheet.querySelector('.fr').textContent=fr;
-    sheet.classList.add('up');
-  }
-  function hideSheet(){ sheet.classList.remove('up'); }
-  sheet.querySelector('.x').onclick=hideSheet;
-  document.addEventListener('click',e=>{
-    const k=e.target.closest('button.k');
-    if(k){ showSheet(k.dataset.kr,k.dataset.fr); e.stopPropagation(); return; }
-    if(!e.target.closest('#sheet')) hideSheet();
-  });
-
-  function toastAff(d){
-    toast.textContent='지호 ♥ '+(d>0?'+ 가까워졌어요':'− 멀어졌어요');
-    toast.classList.add('on'); setTimeout(()=>toast.classList.remove('on'),1700);
-  }
-  function applyAff(d){
-    state.aff.jiho+=d; state.jihoSeen=true;
-    affEl.classList.add('on'); affEl.classList.toggle('warm',state.aff.jiho>0);
-    affEl.classList.add('pulse'); setTimeout(()=>affEl.classList.remove('pulse'),380);
-    toastAff(d);
-  }
-
+  // ---------- rendu ----------
+  function frag(t){return t
+    .replace(/\*([^|*]+)\|([^*]+)\*/g,(m,kr,fr)=>`<button class="k" data-kr="${kr}" data-fr="${fr}">${kr}</button>`)
+    .replace(/\*\*([^*]+)\*\*/g,'<b style="color:#fff">$1</b>')
+    .replace(/\*([^*]+)\*/g,'<i>$1</i>');}
   function block(b){
     const d=document.createElement('div');
-    if(b.t==='narr'){ d.innerHTML='<p class="narr">'+frag(b.h)+'</p>'; return d.firstChild; }
-    if(b.t==='stage'){ d.innerHTML='<p class="stage">'+frag(b.h)+'</p>'; return d.firstChild; }
-    if(b.t==='ko'){ const [kr,fr]=b.h.split('|');
-      d.innerHTML=`<div class="koline"><button class="k" data-kr="${kr}" data-fr="${fr}">${kr}</button></div>`;
-      return d.firstChild; }
-    if(b.t==='npc'){ d.innerHTML=`<div class="npc"><span class="who">${b.w}</span><span class="line">${b.l}</span></div>`; return d.firstChild; }
+    if(b.t==='narr'){d.innerHTML='<p class="narr">'+frag(b.h)+'</p>';return d.firstChild;}
+    if(b.t==='stage'){d.innerHTML='<p class="stage">'+frag(b.h)+'</p>';return d.firstChild;}
+    if(b.t==='npc'){d.innerHTML=`<div class="npc"><span class="who">${b.w}</span><span class="line">${b.l}</span></div>`;return d.firstChild;}
+    if(b.t==='signs'){const read=new Set(b.read);
+      d.innerHTML='<div class="signs">'+b.a.map(s=>`<span class="sign ${read.has(s)?'read':'locked'}">${s}</span>`).join('')+'</div>';
+      return d.firstChild;}
   }
+  const sheetKw=sheet.querySelector('.kw'),sheetFr=sheet.querySelector('.fr');
+  function showSheet(kr,fr){sheetKw.textContent=kr;sheetFr.textContent=fr;sheet.classList.add('up');}
+  function hideSheet(){sheet.classList.remove('up');}
+  sheet.querySelector('.x').onclick=hideSheet;
+  document.addEventListener('click',e=>{const k=e.target.closest('button.k');
+    if(k){showSheet(k.dataset.kr,k.dataset.fr);speak(k.dataset.kr);e.stopPropagation();return;}
+    if(!e.target.closest('#sheet'))hideSheet();});
 
-  function go(id){ hideSheet(); render(id); window.scrollTo({top:0,behavior:'instant'}); }
+  function toastAff(d){toast.textContent='지호 ♥ '+(d>0?'+ 가까워졌어요':'− 멀어졌어요');
+    toast.classList.add('on');setTimeout(()=>toast.classList.remove('on'),1700);}
+  function applyAff(d){state.aff.jiho+=d;affEl.classList.add('on');affEl.classList.toggle('warm',state.aff.jiho>0);
+    affEl.classList.add('pulse');setTimeout(()=>affEl.classList.remove('pulse'),380);toastAff(d);}
+
+  function go(id){hideSheet();render(id);window.scrollTo({top:0});}
 
   function render(id){
-    const sc=S[id]; act.innerHTML=''; document.body.classList.remove('tense');
-    if(sc.card){ renderCard(sc); return; }
-    chapEl.textContent = id.startsWith('c1')||id==='end1' ? '제1화 · Arrivée'
-                        : id.startsWith('c2')||id==='end2' ? '제2화 · Le premier soir' : '';
+    const sc=S[id];act.innerHTML='';document.body.classList.remove('tense');
+    if(sc.p!=null)progi.style.width=Math.round(sc.p*100)+'%';
+    if(sc.card){renderCard(sc);return;}
+    chapEl.textContent = id[0]==='z'||id==='end0'?'제0화 · Arrivée'
+      : id.startsWith('c1')||id==='end1'?'제1화 · En taxi'
+      : id.startsWith('c2')||id==='end2'?'제2화 · Le premier soir':'';
     stage.innerHTML='';
-    const wrap=document.createElement('div'); wrap.className='beat';
-    sc.blocks.forEach(b=>wrap.appendChild(block(b)));
+    const wrap=document.createElement('div');wrap.className='beat';
+    (sc.blocks||[]).forEach(b=>wrap.appendChild(block(b)));
     stage.appendChild(wrap);
-    if(sc.cont){
-      const b=document.createElement('button'); b.className='btn center'; b.textContent='계속 · Continuer';
-      b.onclick=()=>go(sc.cont); act.appendChild(b);
-    } else if(sc.dec){ renderDecision(sc.dec); }
+    if(sc.read){renderDecode(sc.read,sc.after);}
+    else if(sc.find){renderFind(sc.find);}
+    else if(sc.dec){renderDecision(sc.dec);}
+    else if(sc.cont){const b=document.createElement('button');b.className='btn center';
+      b.textContent='계속 · Continuer';b.onclick=()=>go(sc.cont);act.appendChild(b);}
   }
 
-  function renderDecision(dec){
-    document.body.classList.add('tense');           // l'écran se tend : aide coupée
-    const p=document.createElement('div'); p.className='deconly'; p.textContent='— décision · aucune aide —';
-    act.appendChild(p);
-    if(dec.prompt){ const q=document.createElement('p'); q.className='prompt'; q.textContent=dec.prompt; act.appendChild(q); }
-    const holder=document.createElement('div'); holder.style.display='flex';
-    holder.style.flexDirection='column'; holder.style.gap='11px'; act.appendChild(holder);
-    dec.choices.forEach(ch=>{
-      const b=document.createElement('button'); b.className='btn choice';
-      b.innerHTML=`<span class="ko">${ch.ko}</span>`;
-      b.onclick=()=>pick(ch,holder,dec);
-      holder.appendChild(b);
+  // --- mini-jeu de lecture ---
+  function renderDecode(r,after){
+    const box=document.createElement('div');box.className='decode';
+    box.innerHTML=`<div class="head"><span class="icon">${r.icon}</span>
+      <div class="meta"><div class="say">${r.roman}</div><div class="mean">${r.mean}</div></div>
+      <button class="spk" aria-label="Écouter">🔊</button></div>
+      <div class="sylrow"></div><div class="tiles"></div><div class="winholder"></div>`;
+    stage.appendChild(box);
+    box.querySelector('.spk').onclick=()=>speak(r.word);
+    const sylrow=box.querySelector('.sylrow'),tilesEl=box.querySelector('.tiles');
+    // slots syllabes (vides) + séparateurs
+    const slots=[];
+    r.syl.forEach((sy,i)=>{
+      if(i)sylrow.insertAdjacentHTML('beforeend','<span class="plus">+</span>');
+      const el=document.createElement('div');el.className='syl';sylrow.appendChild(el);slots.push(el);
+    });
+    // liste plate de tuiles, dans l'ordre
+    const flat=[];r.syl.forEach((sy,si)=>sy.tiles.forEach(t=>flat.push({g:t[0],s:t[1],si})));
+    let idx=0;
+    flat.forEach((t,i)=>{
+      const b=document.createElement('button');b.className='tile'+(i===0?' next':'');
+      b.innerHTML=`<span class="g">${t.g}</span><span class="s">${t.s}</span>`;
+      b.onclick=()=>{
+        if(i!==idx){b.classList.add('buzz');setTimeout(()=>b.classList.remove('buzz'),300);return;}
+        b.classList.remove('next');b.classList.add('done');idx++;
+        const nx=tilesEl.children[idx];if(nx)nx.classList.add('next');
+        // syllabe complète ?
+        const done=flat.slice(0,idx),cnt={};done.forEach(x=>cnt[x.si]=(cnt[x.si]||0)+1);
+        r.syl.forEach((sy,si)=>{if(cnt[si]===sy.tiles.length&&!slots[si].classList.contains('full')){
+          slots[si].textContent=sy.c;slots[si].classList.add('full');speak(sy.c);}});
+        if(idx===flat.length){
+          setTimeout(()=>{const w=box.querySelector('.winholder');
+            w.innerHTML=`<div class="win"><div class="word">${r.word}</div><div class="rm">${r.roman}</div><div class="mn">${r.mean} — tu sais le lire ✓</div></div>`;
+            speak(r.word);
+            const c=document.createElement('button');c.className='btn center';c.textContent='계속 · Continuer';
+            c.onclick=()=>go(after);act.appendChild(c);act.scrollIntoView({block:'end',behavior:'smooth'});},420);
+        }
+      };
+      tilesEl.appendChild(b);
     });
   }
 
-  function pick(ch,holder,dec){
-    hideSheet();
-    if(ch.r==='go'){ if(ch.aff) applyAff(ch.aff); document.body.classList.remove('tense'); go(ch.go); return; }
-    // retry ou branch : montrer le charabia / la conséquence
+  // --- reconnaître le panneau ---
+  function renderFind(f){
+    const q=document.createElement('p');q.className='prompt';q.textContent=f.prompt;act.appendChild(q);
+    const grid=document.createElement('div');grid.className='find';act.appendChild(grid);
+    f.options.forEach(w=>{
+      const b=document.createElement('button');b.className='btn';b.innerHTML=`<span class="ko">${w}</span>`;
+      b.onclick=()=>{
+        if(w===f.target){speak(w);grid.querySelectorAll('button').forEach(x=>x.disabled=true);
+          b.style.borderColor='var(--ok)';setTimeout(()=>go('z5'),450);}
+        else{b.classList.add('buzz');setTimeout(()=>b.classList.remove('buzz'),300);
+          b.style.borderColor='var(--err)';setTimeout(()=>b.style.borderColor='',500);}
+      };
+      grid.appendChild(b);
+    });
+  }
+
+  function renderDecision(dec){
+    document.body.classList.add('tense');
+    const p=document.createElement('div');p.className='deconly';p.textContent='— décision · aucune aide —';act.appendChild(p);
+    if(dec.prompt){const q=document.createElement('p');q.className='prompt';q.textContent=dec.prompt;act.appendChild(q);}
+    const holder=document.createElement('div');holder.style.cssText='display:flex;flex-direction:column;gap:11px';act.appendChild(holder);
+    dec.choices.forEach(ch=>{const b=document.createElement('button');b.className='btn choice';
+      b.innerHTML=`<span class="ko">${ch.ko}</span>`;b.onclick=()=>pick(ch,holder);holder.appendChild(b);});
+  }
+  function pick(ch,holder){
+    hideSheet();speak(ch.ko.replace(/[.?!]/g,''));
+    if(ch.r==='go'){if(ch.aff)applyAff(ch.aff);document.body.classList.remove('tense');go(ch.go);return;}
     holder.querySelectorAll('button').forEach(x=>x.disabled=true);
-    const f=document.createElement('div'); f.className='fallout'+(ch.cold?' cold':'');
+    const f=document.createElement('div');f.className='fallout'+(ch.cold?' cold':'');
     f.innerHTML=(ch.say?`<p class="say">« ${ch.say} »</p>`:'')+`<p class="cons">${ch.cons}</p>`;
-    const b=document.createElement('button'); b.className='btn center';
-    if(ch.r==='retry'){
-      b.textContent='다시 · Réessayer';
-      b.onclick=()=>{ f.remove(); b.remove(); holder.querySelectorAll('button').forEach(x=>x.disabled=false); };
-    } else { // branch
-      b.textContent='계속 · Continuer';
-      b.onclick=()=>{ if(ch.aff) applyAff(ch.aff); document.body.classList.remove('tense'); go(ch.go); };
-    }
-    f.appendChild(b); act.appendChild(f);
-    act.scrollIntoView({block:'end',behavior:'smooth'});
+    const b=document.createElement('button');b.className='btn center';
+    if(ch.r==='retry'){b.textContent='다시 · Réessayer';
+      b.onclick=()=>{f.remove();b.remove();holder.querySelectorAll('button').forEach(x=>x.disabled=false);};}
+    else{b.textContent='계속 · Continuer';
+      b.onclick=()=>{if(ch.aff)applyAff(ch.aff);document.body.classList.remove('tense');go(ch.go);};}
+    f.appendChild(b);act.appendChild(f);act.scrollIntoView({block:'end',behavior:'smooth'});
   }
 
   function renderCard(sc){
-    document.body.classList.remove('tense'); chapEl.textContent=''; stage.innerHTML='';
-    const c=document.createElement('div'); c.className='card';
+    document.body.classList.remove('tense');chapEl.textContent='';stage.innerHTML='';
+    const c=document.createElement('div');c.className='card';
     let recap='';
-    if(sc.recap){ const s=state.aff.jiho;
-      recap=`<p class="body" style="color:var(--rose)">지호 — ${s>0?'un lien qui commence 🌱':s<0?'un premier contact manqué (rattrapable)':'—'}</p>`; }
-    c.innerHTML=
-      (sc.mark?`<div class="mark">${sc.mark}</div>`:'')+
-      (sc.epi?`<div class="epi">${sc.epi}</div>`:'')+
-      `<h1>${sc.title}</h1>`+
-      (sc.rule!==0?'<div class="rule"></div>':'')+
-      (sc.note?`<p class="note">${sc.note}</p>`:'')+
-      (sc.body?`<p class="body">${sc.body}</p>`:'')+recap;
-    const b=document.createElement('button'); b.className='btn'; b.textContent=sc.cta||'Continuer';
-    b.onclick=()=>{ if(sc.go==='title1'){state.aff.jiho=0;state.jihoSeen=false;affEl.className='aff';} go(sc.go); };
-    c.appendChild(b); stage.appendChild(c);
+    if(sc.recap){const s=state.aff.jiho;
+      recap=`<p class="body" style="color:var(--rose)">지호 — ${s>0?'un lien qui commence 🌱':s<0?'un premier contact manqué (rattrapable)':'—'}</p>`;}
+    c.innerHTML=(sc.mark?`<div class="mark">${sc.mark}</div>`:'')+(sc.epi?`<div class="epi">${sc.epi}</div>`:'')+
+      `<h1>${sc.title}</h1><div class="rule"></div>`+
+      (sc.note?`<p class="note">${sc.note}</p>`:'')+(sc.body?`<p class="body">${sc.body}</p>`:'')+recap;
+    const b=document.createElement('button');b.className='btn center';b.style.minWidth='200px';b.textContent=sc.cta||'Continuer';
+    b.onclick=()=>{if(sc.go==='title0'){state.aff.jiho=0;affEl.className='aff';}go(sc.go);};
+    c.appendChild(b);stage.appendChild(c);
   }
 
-  render('title1');
+  render('title0');
 })();
 </script>
 </body>
