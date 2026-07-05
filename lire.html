@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0e1219">
+<title>소리 · Apprendre à lire — démo</title>
+<style>
+  :root{
+    --ground:#0e1219;--ground2:#080b11;--panel:#161d2b;--panel2:#1c2536;--line:#28324a;
+    --ink:#ece4d6;--dim:#9aa3b6;--muted:#6a7489;--amber:#f0a04b;--amber-s:#f6c684;--teal:#57c9c0;
+    --ok:#82cd93;--err:#e58a8a;
+    --serif:"Iowan Old Style",Palatino,"Book Antiqua",Georgia,serif;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    --ko:"Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--ground2);color:var(--ink);font-family:var(--sans)}
+  body{background:radial-gradient(120% 60% at 78% -8%,rgba(240,160,75,.10),transparent 60%),var(--ground);-webkit-font-smoothing:antialiased}
+  #app{max-width:600px;margin:0 auto;min-height:100dvh;display:flex;flex-direction:column;padding:0 clamp(16px,5vw,26px) 60px}
+  #bar{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:12px;padding:14px 2px 12px;background:linear-gradient(var(--ground) 60%,transparent)}
+  .lbl{font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);font-weight:600;white-space:nowrap}
+  .prog{flex:1;height:3px;background:#1b2230;border-radius:2px;overflow:hidden;max-width:180px}
+  .prog>i{display:block;height:100%;width:0;background:var(--amber);transition:width .4s}
+  #stage{flex:1;padding-top:6px}
+  .fade{animation:rise .5s cubic-bezier(.2,.7,.2,1) both}
+  @keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  @keyframes pop{0%{transform:scale(.4);opacity:0}60%{transform:scale(1.15)}100%{transform:scale(1);opacity:1}}
+  @keyframes buzz{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+  p.narr{font-size:1.05rem;line-height:1.6;color:var(--ink);margin:0 0 1em}
+  .center{text-align:center}
+  .btn{font:inherit;font-weight:600;color:var(--ink);background:var(--panel2);border:1px solid var(--line);border-radius:13px;padding:15px 16px;cursor:pointer;transition:.15s;width:100%;text-align:center}
+  .btn:hover{border-color:#3a4a66;background:#212b3e}.btn:active{transform:translateY(1px)}
+  .btn:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+  .btn.a{color:var(--amber-s)}
+  .btn[disabled]{opacity:.5;pointer-events:none}
+  #act{margin-top:18px;display:flex;flex-direction:column;gap:11px}
+  /* cartes-lettres (découverte) */
+  .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:6px 0 4px}
+  .jcard{border:1px solid var(--line);border-radius:12px;background:#12182360;padding:12px 6px 8px;text-align:center;cursor:pointer;transition:.15s}
+  .jcard:hover{border-color:var(--amber)}
+  .jcard .g{font-family:var(--ko);font-size:2rem;color:#fff;line-height:1.1}
+  .jcard .s{font-size:.78rem;color:var(--amber-s);margin-top:2px}
+  .jcard .e{font-family:var(--ko);font-size:.85rem;color:var(--dim);margin-top:2px}
+  /* quiz */
+  .big{font-family:var(--ko);font-size:4.2rem;color:#fff;text-align:center;margin:8px 0 2px}
+  .bigson{font-size:2.6rem;color:var(--amber-s);text-align:center;font-family:var(--sans);font-weight:700;margin:14px 0 2px}
+  .q{color:var(--dim);text-align:center;margin:0 0 6px}
+  .opts{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+  .opts .btn{font-size:1.15rem}
+  .opts .btn.ko{font-family:var(--ko);font-size:1.9rem}
+  .btn.good{border-color:var(--ok);color:#fff}.btn.bad{border-color:var(--err)}
+  .btn.buzz{animation:buzz .3s}
+  .fb{text-align:center;color:var(--dim);margin-top:12px;min-height:1.3em}
+  /* assemblage */
+  .sylrow{display:flex;gap:10px;justify-content:center;margin:10px 0 18px;min-height:70px;align-items:center}
+  .syl{width:64px;height:64px;border:1.5px dashed #38425c;border-radius:12px;display:flex;align-items:center;justify-content:center;font-family:var(--ko);font-size:2.2rem;color:#fff}
+  .syl.full{border-style:solid;border-color:var(--amber);background:rgba(240,160,75,.08);animation:pop .4s both}
+  .tiles{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+  .tile{min-width:56px;padding:9px 6px 6px;border:1px solid var(--line);border-radius:11px;background:var(--panel2);cursor:pointer;text-align:center;transition:.15s}
+  .tile .g{font-family:var(--ko);font-size:1.6rem;color:#fff;display:block;line-height:1.1}
+  .tile .s{font-size:.72rem;color:var(--dim)}
+  .tile.next{border-color:var(--amber);box-shadow:0 0 0 2px rgba(240,160,75,.15)}
+  .tile.done{opacity:.35;pointer-events:none}.tile.buzz{animation:buzz .3s}
+  .spk{background:none;border:1px solid var(--line);color:var(--amber-s);border-radius:10px;padding:10px 16px;cursor:pointer;font-size:1.2rem}
+  .card{text-align:center;padding:11vh 6px 5vh}
+  .card .mark{font-family:var(--ko);font-size:1rem;letter-spacing:.4em;color:var(--amber);opacity:.8;margin-bottom:22px}
+  .card h1{font-family:var(--serif);font-weight:600;font-size:clamp(2rem,8vw,2.7rem);margin:.1em 0}
+  .card .note{color:var(--ok);margin:18px auto 26px;max-width:22em;line-height:1.5}
+  .rule{width:44px;height:1px;background:var(--line);margin:20px auto}
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div id="app">
+  <header id="bar"><span class="lbl" id="lbl">한글 · Leçon 1</span><span class="prog"><i id="pi"></i></span></header>
+  <main id="stage"></main>
+  <div id="act"></div>
+</div>
+<script src="./hangul.js"></script>
+<script src="./hangul-exercises.js"></script>
+<script>
+(function(){
+  "use strict";
+  const H=window.SORI_HANGUL, EX=window.SORI_HANGUL_EX;
+  const stage=document.getElementById('stage'),act=document.getElementById('act'),
+        pi=document.getElementById('pi');
+  function speak(t){try{if(!window.speechSynthesis)return;const u=new SpeechSynthesisUtterance(t);u.lang='ko-KR';u.rate=.8;speechSynthesis.cancel();speechSynthesis.speak(u);}catch(e){}}
+  function el(h){const t=document.createElement('template');t.innerHTML=h.trim();return t.content.firstChild;}
+
+  const LESSON=["ㅇ","ㅏ","ㅣ","ㅗ","ㄴ","ㄱ","ㅅ","ㅁ"];   // lot 1 (hangul.js LEARNING_ORDER)
+  const ASSEMBLE=["가","시"];
+  const READ={target:"시",options:["가","나","소","시"]};
+  // séquence d'écrans
+  const SEQ=[{t:"intro"},{t:"discover"}];
+  LESSON.forEach((g,i)=>SEQ.push({t:"quiz",g,mode:i%2?"glyph":"sound"}));
+  ASSEMBLE.forEach(s=>SEQ.push({t:"assemble",s}));
+  SEQ.push({t:"read"},{t:"done"});
+  let pos=0;
+  function next(){pos++;render();}
+  function render(){
+    const sc=SEQ[pos];act.innerHTML='';stage.innerHTML='';
+    pi.style.width=Math.round(100*pos/(SEQ.length-1))+'%';
+    ({intro:rIntro,discover:rDiscover,quiz:rQuiz,assemble:rAssemble,read:rRead,done:rDone})[sc.t](sc);
+    window.scrollTo({top:0});
+  }
+  function contBtn(txt){const b=el(`<button class="btn a">${txt||'계속 · Continuer'}</button>`);b.onclick=next;act.appendChild(b);return b;}
+
+  function rIntro(){
+    stage.appendChild(el(`<div class="card fade"><div class="mark">소리</div>
+      <h1>Apprendre à lire</h1><div class="rule"></div>
+      <p class="note">🟢 Le coréen s'écrit avec un alphabet — pas des milliers de signes. Tu vas lire tes premières lettres tout de suite.</p></div>`));
+    contBtn('시작 · Commencer');
+  }
+  function rDiscover(){
+    stage.appendChild(el(`<p class="narr center fade">Voici tes 8 premières lettres. <b>Tape chacune</b> pour l'entendre.</p>`));
+    const g=el(`<div class="grid fade"></div>`);
+    LESSON.forEach(j=>{const m=H.JAMO[j];
+      const c=el(`<div class="jcard"><div class="g">${j}</div><div class="s">${m.son}</div><div class="e">${m.ex}</div></div>`);
+      c.onclick=()=>speak(m.ex);g.appendChild(c);});
+    stage.appendChild(g);
+    contBtn('J\'ai regardé →');
+  }
+  function rQuiz(sc){
+    const rnd=Math.random;
+    if(sc.mode==="sound"){
+      const q=EX.soundQuiz(sc.g,{random:rnd});
+      stage.appendChild(el(`<p class="q fade">Quel son fait cette lettre ?</p>`));
+      stage.appendChild(el(`<div class="big fade">${sc.g}</div>`));
+      quizOpts(q.options,q.answer,false);
+    }else{
+      const q=EX.glyphQuiz(sc.g,{random:rnd});
+      stage.appendChild(el(`<p class="q fade">Quelle lettre fait le son «&nbsp;${q.son}&nbsp;» ?</p>`));
+      stage.appendChild(el(`<div class="bigson fade">${q.son}</div>`));
+      quizOpts(q.options,q.answer,true);
+    }
+  }
+  function quizOpts(options,answer,ko){
+    const box=el(`<div class="opts fade"></div>`);
+    const fb=el(`<div class="fb"></div>`);
+    options.forEach(o=>{
+      const b=el(`<button class="btn ${ko?'ko':''}">${o}</button>`);
+      b.onclick=()=>{
+        if(o===answer){b.classList.add('good');if(ko)speak(o);box.querySelectorAll('button').forEach(x=>x.disabled=true);fb.textContent='정답 ✓';setTimeout(next,650);}
+        else{b.classList.add('bad','buzz');setTimeout(()=>b.classList.remove('buzz'),300);b.disabled=true;
+          fb.innerHTML=`C'était <b>${answer}</b>`;
+          // révèle la bonne
+          [...box.children].forEach(x=>{if(x.textContent===answer)x.classList.add('good');});
+          box.querySelectorAll('button').forEach(x=>x.disabled=true);setTimeout(next,1100);}
+      };
+      box.appendChild(b);
+    });
+    stage.appendChild(box);stage.appendChild(fb);
+  }
+  function rAssemble(sc){
+    const a=EX.assemble(sc.s);
+    stage.appendChild(el(`<p class="q fade">Assemble le bloc — tape les lettres dans l'ordre.</p>`));
+    const spk=el(`<div class="center fade" style="margin-bottom:8px"><button class="spk">🔊 ${a.syllable}</button></div>`);
+    spk.querySelector('.spk').onclick=()=>speak(a.syllable);stage.appendChild(spk);
+    const slot=el(`<div class="sylrow fade"><div class="syl"></div></div>`);stage.appendChild(slot);
+    const sylEl=slot.querySelector('.syl');
+    const tiles=el(`<div class="tiles fade"></div>`);
+    let idx=0;
+    a.tiles.forEach((t,i)=>{
+      const b=el(`<button class="tile${i===0?' next':''}"><span class="g">${t.g}</span><span class="s">${t.son}</span></button>`);
+      b.onclick=()=>{
+        if(i!==idx){b.classList.add('buzz');setTimeout(()=>b.classList.remove('buzz'),300);return;}
+        b.classList.remove('next');b.classList.add('done');idx++;
+        const nx=tiles.children[idx];if(nx)nx.classList.add('next');
+        if(idx===a.tiles.length){sylEl.textContent=a.syllable;sylEl.classList.add('full');speak(a.syllable);
+          setTimeout(()=>contBtn('계속 · Continuer'),450);}
+      };
+      tiles.appendChild(b);
+    });
+    stage.appendChild(tiles);
+  }
+  function rRead(){
+    stage.appendChild(el(`<p class="q fade">Écoute, puis tape le bloc que tu entends.</p>`));
+    const spk=el(`<div class="center fade" style="margin-bottom:12px"><button class="spk">🔊 Réécouter</button></div>`);
+    spk.querySelector('.spk').onclick=()=>speak(READ.target);stage.appendChild(spk);speak(READ.target);
+    const box=el(`<div class="opts fade"></div>`);
+    // mélange simple des options
+    const opts=READ.options.slice();
+    box.classList.add('opts');
+    opts.forEach(o=>{const b=el(`<button class="btn ko">${o}</button>`);
+      b.onclick=()=>{if(o===READ.target){b.classList.add('good');speak(o);box.querySelectorAll('button').forEach(x=>x.disabled=true);setTimeout(next,700);}
+        else{b.classList.add('bad','buzz');setTimeout(()=>b.classList.remove('buzz'),300);b.style.borderColor='';b.disabled=true;}};
+      box.appendChild(b);});
+    stage.appendChild(box);
+  }
+  function rDone(){
+    stage.appendChild(el(`<div class="card fade"><div class="mark">소리</div>
+      <h1>Leçon 1 terminée</h1><div class="rule"></div>
+      <p class="note">✅ Tu lis tes 8 premières lettres — et tu sais assembler un bloc. Le hangeul, c'est parti.</p></div>`));
+    const b=el(`<button class="btn a">↻ Recommencer</button>`);b.onclick=()=>{pos=0;render();};act.appendChild(b);
+  }
+  render();
+})();
+</script>
+</body>
+</html>
