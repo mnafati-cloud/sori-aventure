@@ -134,44 +134,16 @@
   const N=(t)=>({t:'narr',h:t}),ST=(t)=>({t:'stage',h:t}),NPC=(w,l)=>({t:'npc',w,l}),
         SIGNS=(a,read)=>({t:'signs',a,read:read||[]});
   // syllabes: [{c:'택', tiles:[['ㅌ','t'],['ㅐ','è'],['ㄱ','k']]}, ...]
-  const READ=(icon,mean,roman,syl,word)=>({t:'read',icon,mean,roman,syl,word});
 
   const S={
-    /* ===== CHAPITRE 0 — apprendre à LIRE ===== */
-    title0:{card:1,mark:'소리',epi:'제0화',title:'Arrivée',
-      note:'🟢 Tu ne sais pas encore lire le coréen — c’est normal. On commence exactement par là.',go:'z1',cta:'시작 · Commencer'},
-    z1:{p:.06,blocks:[
-      N("Minuit passé. Tu sors de l’avion, la valise à la main, dans un terminal immense de l’aéroport d’Incheon."),
-      N("Partout, des panneaux. Des flèches. Des mots. Et pas un seul que tu saches lire — juste des formes qui ne veulent rien dire."),
-      SIGNS(['택시','출구','화장실','지하철'])
-    ],cont:'z2'},
-    z2:{p:.14,blocks:[
-      N("Tu es fatigué·e, seul·e, et il te faut un taxi. Dans l’avion, ta voisine te l’a répété : « pour un taxi, tu dis tèk-shi. »"),
-      N("Ce son-là, tu le connais. Il te suffit de le retrouver, écrit. Décode-le, lettre par lettre :")
-    ],read:READ('🚕','taxi','tèk-shi',
-      [{c:'택',tiles:[['ㅌ','t'],['ㅐ','è'],['ㄱ','k']]},{c:'시',tiles:[['ㅅ','sh'],['ㅣ','i']]}],'택시'),
-     after:'z3'},
-    z3:{p:.24,blocks:[
-      N("**택시.** Ton premier mot coréen lu — pas deviné, *lu*. Mais les taxis, c’est dehors. Il faut d’abord trouver la sortie."),
-      N("Ta voisine t’avait aussi soufflé celui-là : « sortie, ça se dit tchoul-gou. » Décode :")
-    ],read:READ('🚪','sortie','tchoul-gou',
-      [{c:'출',tiles:[['ㅊ','tch'],['ㅜ','ou'],['ㄹ','l']]},{c:'구',tiles:[['ㄱ','g'],['ㅜ','ou']]}],'출구'),
-     after:'z4'},
-    z4:{p:.34,blocks:[
-      N("Au bout du couloir, quatre panneaux éclairés. Tu ne connais que deux mots — mais deux, c’est assez.")
-    ],find:{prompt:'Où est la sortie ?',target:'출구',
-      options:['화장실','출구','지하철','택시']}},
-    z5:{p:.42,blocks:[
-      N("Tu pousses la porte. L’air froid de la nuit, l’odeur d’une ville inconnue. Une file de voitures oranges t’attend."),
-      SIGNS(['택시','출구'],['택시','출구']),
-      N("Il y a une heure, ces panneaux étaient des dessins. Maintenant, tu les *lis*. Ce n’est pas grand-chose. C’est énorme.")
-    ],cont:'end0'},
-    end0:{card:1,epi:'',title:'Fin du chapitre 0',note:'✅ Tu sais lire tes premiers panneaux : 택시, 출구.',
-      body:'Un taxi t’attend. Direction ton nouveau chez-toi.',go:'title1',cta:'Continuer'},
-
-    /* ===== CHAPITRE 1 — le taxi ===== */
-    title1:{card:1,mark:'소리',epi:'제1화',title:'En taxi',
-      note:'🟢 Tu sais lire l’essentiel. À toi de parler, maintenant.',go:'c1_1',cta:'시작 · Commencer'},
+    /* ===== CHAPITRE 1 — Arrivée (HISTOIRE seule : on n’apprend RIEN ici ; lire/comprendre = l’app) ===== */
+    title1:{card:1,mark:'소리',epi:'제1화',title:'Arrivée',
+      note:'⚠️ Ici tu ne révises pas — tu vis l’histoire. Aux moments qui comptent, le coréen est brut, sans aide. (Lire et comprendre, c’est le rôle de l’app.)',go:'c1_arr',cta:'시작 · Commencer'},
+    c1_arr:{p:.1,blocks:[
+      N("Minuit passé. Tu sors de l’avion dans un terminal immense d’Incheon. Partout des panneaux — et pour l’instant, tu n’en lis aucun."),
+      SIGNS(['택시','출구','화장실','지하철']),
+      N("Chaque signe reste un mur. Tu suis la foule vers la sortie ; dehors, une file de voitures oranges t’attend.")
+    ],cont:'c1_1'},
     c1_1:{p:.5,blocks:[
       N("Tu montes à l’arrière. Le chauffeur, la soixantaine, croise ton regard dans le rétroviseur."),
       NPC('기사님',"어서 오세요. 어디로 가세요?"),
@@ -226,7 +198,7 @@
       N("Tu manges tes biscuits d’avion, seul·e, dans le noir. Demain, peut-être, tu frapperas à ton tour.")
     ],cont:'end2'},
     end2:{card:1,epi:'',title:'Fin de la démo',recap:1,
-      body:'Chapitre 3 à venir — la supérette, seul·e dans la nuit de Séoul.',go:'title0',cta:'↻ Recommencer'}
+      body:'Chapitre 3 à venir — la supérette, seul·e dans la nuit de Séoul.',go:'title1',cta:'↻ Recommencer'}
   };
 
   // ---------- rendu ----------
@@ -262,76 +234,15 @@
     const sc=S[id];act.innerHTML='';document.body.classList.remove('tense');
     if(sc.p!=null)progi.style.width=Math.round(sc.p*100)+'%';
     if(sc.card){renderCard(sc);return;}
-    chapEl.textContent = id[0]==='z'||id==='end0'?'제0화 · Arrivée'
-      : id.startsWith('c1')||id==='end1'?'제1화 · En taxi'
+    chapEl.textContent = id.startsWith('c1')||id==='end1'?'제1화 · Arrivée'
       : id.startsWith('c2')||id==='end2'?'제2화 · Le premier soir':'';
     stage.innerHTML='';
     const wrap=document.createElement('div');wrap.className='beat';
     (sc.blocks||[]).forEach(b=>wrap.appendChild(block(b)));
     stage.appendChild(wrap);
-    if(sc.read){renderDecode(sc.read,sc.after);}
-    else if(sc.find){renderFind(sc.find);}
-    else if(sc.dec){renderDecision(sc.dec);}
+    if(sc.dec){renderDecision(sc.dec);}
     else if(sc.cont){const b=document.createElement('button');b.className='btn center';
       b.textContent='계속 · Continuer';b.onclick=()=>go(sc.cont);act.appendChild(b);}
-  }
-
-  // --- mini-jeu de lecture ---
-  function renderDecode(r,after){
-    const box=document.createElement('div');box.className='decode';
-    box.innerHTML=`<div class="head"><span class="icon">${r.icon}</span>
-      <div class="meta"><div class="say">${r.roman}</div><div class="mean">${r.mean}</div></div>
-      <button class="spk" aria-label="Écouter">🔊</button></div>
-      <div class="sylrow"></div><div class="tiles"></div><div class="winholder"></div>`;
-    stage.appendChild(box);
-    box.querySelector('.spk').onclick=()=>speak(r.word);
-    const sylrow=box.querySelector('.sylrow'),tilesEl=box.querySelector('.tiles');
-    // slots syllabes (vides) + séparateurs
-    const slots=[];
-    r.syl.forEach((sy,i)=>{
-      if(i)sylrow.insertAdjacentHTML('beforeend','<span class="plus">+</span>');
-      const el=document.createElement('div');el.className='syl';sylrow.appendChild(el);slots.push(el);
-    });
-    // liste plate de tuiles, dans l'ordre
-    const flat=[];r.syl.forEach((sy,si)=>sy.tiles.forEach(t=>flat.push({g:t[0],s:t[1],si})));
-    let idx=0;
-    flat.forEach((t,i)=>{
-      const b=document.createElement('button');b.className='tile'+(i===0?' next':'');
-      b.innerHTML=`<span class="g">${t.g}</span><span class="s">${t.s}</span>`;
-      b.onclick=()=>{
-        if(i!==idx){b.classList.add('buzz');setTimeout(()=>b.classList.remove('buzz'),300);return;}
-        b.classList.remove('next');b.classList.add('done');idx++;
-        const nx=tilesEl.children[idx];if(nx)nx.classList.add('next');
-        // syllabe complète ?
-        const done=flat.slice(0,idx),cnt={};done.forEach(x=>cnt[x.si]=(cnt[x.si]||0)+1);
-        r.syl.forEach((sy,si)=>{if(cnt[si]===sy.tiles.length&&!slots[si].classList.contains('full')){
-          slots[si].textContent=sy.c;slots[si].classList.add('full');speak(sy.c);}});
-        if(idx===flat.length){
-          setTimeout(()=>{const w=box.querySelector('.winholder');
-            w.innerHTML=`<div class="win"><div class="word">${r.word}</div><div class="rm">${r.roman}</div><div class="mn">${r.mean} — tu sais le lire ✓</div></div>`;
-            speak(r.word);
-            const c=document.createElement('button');c.className='btn center';c.textContent='계속 · Continuer';
-            c.onclick=()=>go(after);act.appendChild(c);act.scrollIntoView({block:'end',behavior:'smooth'});},420);
-        }
-      };
-      tilesEl.appendChild(b);
-    });
-  }
-
-  // --- reconnaître le panneau ---
-  function renderFind(f){
-    const q=document.createElement('p');q.className='prompt';q.textContent=f.prompt;act.appendChild(q);
-    const grid=document.createElement('div');grid.className='find';act.appendChild(grid);
-    f.options.forEach(w=>{
-      const b=document.createElement('button');b.className='btn';b.innerHTML=`<span class="ko">${w}</span>`;
-      b.onclick=()=>{
-        if(w===f.target){speak(w);grid.querySelectorAll('button').forEach(x=>x.disabled=true);
-          b.style.borderColor='var(--ok)';setTimeout(()=>go('z5'),450);}
-        else{b.classList.add('buzz');setTimeout(()=>b.classList.remove('buzz'),300);
-          b.style.borderColor='var(--err)';setTimeout(()=>b.style.borderColor='',500);}
-      };
-      grid.appendChild(b);
-    });
   }
 
   function renderDecision(dec){
@@ -366,11 +277,11 @@
       `<h1>${sc.title}</h1><div class="rule"></div>`+
       (sc.note?`<p class="note">${sc.note}</p>`:'')+(sc.body?`<p class="body">${sc.body}</p>`:'')+recap;
     const b=document.createElement('button');b.className='btn center';b.style.minWidth='200px';b.textContent=sc.cta||'Continuer';
-    b.onclick=()=>{if(sc.go==='title0'){state.aff.jiho=0;affEl.className='aff';}go(sc.go);};
+    b.onclick=()=>{if(sc.go==='title1'){state.aff.jiho=0;affEl.className='aff';}go(sc.go);};
     c.appendChild(b);stage.appendChild(c);
   }
 
-  render('title0');
+  render('title1');
 })();
 </script>
 </body>
