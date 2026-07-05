@@ -15,138 +15,132 @@
   html,body{margin:0;background:var(--ground2);color:var(--ink);font-family:var(--sans)}
   body{background:radial-gradient(120% 60% at 78% -8%,rgba(240,160,75,.10),transparent 60%),var(--ground)}
   #app{max-width:600px;margin:0 auto;min-height:100dvh;padding:16px clamp(16px,5vw,26px) 40px}
-  h1{font-size:1.05rem;letter-spacing:.02em;margin:0 0 2px}
-  .sub{color:var(--dim);font-size:.85rem;margin:0 0 16px;line-height:1.4}
-  .row{display:flex;gap:8px;flex-wrap:wrap}
-  .seg{display:flex;gap:6px;margin:0 0 14px}
+  h1{font-size:1.02rem;margin:0 0 2px}
+  .sub{color:var(--dim);font-size:.83rem;margin:0 0 16px;line-height:1.4}
+  .seg{display:flex;gap:6px;margin:0 0 16px}
   .seg button{flex:1;font:inherit;font-weight:600;color:var(--dim);background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:9px;cursor:pointer}
   .seg button.on{color:#fff;border-color:var(--amber);background:#212b3e}
-  .npc{font-family:var(--ko);font-size:1.35rem;color:#fff;border-left:2px solid var(--line);padding-left:14px;margin:4px 0 4px}
-  .npcfr{color:var(--dim);font-size:.85rem;margin:0 0 16px}
-  .deconly{font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin:0 0 10px}
-  .choice{border:1px solid var(--line);border-left-width:4px;border-radius:12px;background:#12182360;padding:12px 14px;margin-bottom:11px;cursor:pointer;transition:.15s}
-  .choice:hover{background:#1a2130}
-  .choice.ok{border-left-color:var(--ok)} .choice.warn{border-left-color:var(--warn)} .choice.no{border-left-color:var(--err)}
-  .choice .kr{font-family:var(--ko);font-size:1.3rem;color:#fff}
-  .choice .meta{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:6px}
-  .chip{font-size:.74rem;font-weight:700;padding:3px 9px;border-radius:999px}
-  .chip.ok{color:var(--ok);background:rgba(130,205,147,.12)}
-  .chip.warn{color:var(--warn);background:rgba(224,177,92,.12)}
-  .chip.no{color:var(--err);background:rgba(229,138,138,.12)}
-  .req{font-size:.78rem;color:var(--dim)}
-  .req b{color:var(--amber-s);font-family:var(--ko);font-weight:400}
-  .req .miss{color:var(--err);font-family:var(--ko)}
-  .panel{border:1px solid var(--line);border-radius:12px;background:#12182360;padding:14px;margin-top:18px}
-  .panel h2{font-size:.9rem;margin:0 0 8px;color:var(--amber-s)}
-  .panel p{color:var(--dim);font-size:.84rem;line-height:1.5;margin:0 0 12px}
-  .btn{font:inherit;font-weight:600;color:var(--ink);background:var(--panel2);border:1px solid var(--line);border-radius:11px;padding:12px 14px;cursor:pointer}
+  .btn{font:inherit;font-weight:600;color:var(--ink);background:var(--panel2);border:1px solid var(--line);border-radius:11px;padding:13px 16px;cursor:pointer}
   .btn:hover{border-color:#3a4a66}
-  .out{margin-top:14px;min-height:1.3em;color:var(--ink);font-size:.95rem}
-  .out .g{color:var(--ok)} .out .w{color:var(--warn)} .out .b{color:var(--err)}
-  .score{font-size:.8rem;color:var(--dim);margin-top:6px}
+  .btn.big{width:100%;text-align:center;font-size:1.05rem;padding:15px}
+  .btn.enter{color:#0e1219;background:var(--amber);border-color:var(--amber)}
+  .btn.enter[disabled]{opacity:1}
+  .row{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+  /* PORTE */
+  .door{border:1px solid var(--line);border-radius:16px;background:#12182360;padding:20px 18px;text-align:center}
+  .door .epi{font-family:var(--ko);color:var(--amber);letter-spacing:.1em;font-size:.9rem}
+  .door h2{margin:.2em 0 .1em;font-size:1.5rem}
+  .door .story{color:var(--dim);font-size:.9rem;margin:0 0 18px}
+  .gauge{display:inline-flex;flex-direction:column;align-items:center;gap:6px;margin:6px 0 4px}
+  .dot{width:66px;height:66px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.7rem;border:2px solid}
+  .gauge .lab{font-weight:700}
+  .gauge .cnt{color:var(--dim);font-size:.82rem}
+  .ok .dot{border-color:var(--ok);background:rgba(130,205,147,.12)} .ok .lab{color:var(--ok)}
+  .warn .dot{border-color:var(--warn);background:rgba(224,177,92,.12)} .warn .lab{color:var(--warn)}
+  .no .dot{border-color:var(--err);background:rgba(229,138,138,.12)} .no .lab{color:var(--err)}
+  .hint{color:var(--muted);font-size:.8rem;margin-top:16px;line-height:1.4}
+  /* DEDANS (histoire brute) */
+  .deconly{font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin:2px 0 10px}
+  .npc{font-family:var(--ko);font-size:1.4rem;color:#fff;border-left:2px solid var(--line);padding-left:14px;margin:4px 0 4px}
+  .npcfr{color:var(--dim);font-size:.85rem;margin:0 0 18px}
+  .choice{width:100%;text-align:left;border:1px solid var(--line);border-radius:12px;background:#12182360;padding:14px;margin-bottom:11px;cursor:pointer}
+  .choice:hover{background:#1a2130;border-color:#3a4a66}
+  .choice .kr{font-family:var(--ko);font-size:1.3rem;color:#fff}
+  .out{margin-top:8px;min-height:1.3em;font-size:.95rem;line-height:1.5}
+  .out .g{color:var(--ok)} .out .b{color:var(--err)}
+  .back{background:none;border:0;color:var(--dim);cursor:pointer;font:inherit;padding:6px 0;margin-bottom:8px}
 </style>
 </head>
 <body>
 <div id="app">
   <h1>Le pont — l'app ⇄ l'histoire</h1>
-  <p class="sub">Chaque réponse porte <b>ce qu'elle exige</b>. Sa couleur dépend de <b>ton score dans l'app</b>.
-    🟢 prêt · 🟠 risqué · 🔴 pas prêt. Tu peux tenter quand même, ou aller <b>réviser</b> et revenir.</p>
+  <p class="sub">La jauge est <b>à la porte du chapitre</b>, pas sur les réponses. Tu révises, tu vois tes chances,
+    tu décides d'entrer. <b>Dedans, aucune aide</b> : coréen brut, les choix coûtent.</p>
 
   <div class="seg" id="seg">
-    <button data-s="arrivee" class="on">Scène 1 · Arrivée</button>
-    <button data-s="taxi">Scène (plus tard) · Taxi</button>
+    <button data-c="arrivee" class="on">Chapitre · Arrivée</button>
+    <button data-c="taxi">Chapitre · Taxi</button>
   </div>
-
-  <div class="deconly">— décision · aucune aide —</div>
-  <div class="npc" id="npc"></div>
-  <div class="npcfr" id="npcfr"></div>
-  <div id="choices"></div>
-  <div class="out" id="out"></div>
-
-  <div class="panel">
-    <h2>📚 Ton apprentissage (le score)</h2>
-    <p>Voilà ce que l'app t'a fait maîtriser. Révise pour monter ton score — regarde les réponses changer de couleur.</p>
-    <div class="row">
-      <button class="btn" id="revtaxi">📚 Réviser le vocabulaire du taxi</button>
-      <button class="btn" id="reset">↺ Redevenir débutant</button>
-    </div>
-    <div class="score" id="score"></div>
-  </div>
+  <div id="view"></div>
 </div>
 <script>
 (function(){
   "use strict";
-  // SCORE DU JOUEUR = maîtrise par mot (stade 0-5, comme l'app SR). Absent = 0.
-  const START={ '안녕하세요':5,'감사합니다':5,'네':4,'아니요':4 };   // un débutant : juste les salutations
+  const START={ '안녕하세요':5,'감사합니다':5,'네':4,'아니요':4 };   // débutant : salutations
   let mastery=Object.assign({},START);
-  const KNOWN=3;   // un mot est "utilisable" à partir du stade 3
+  const KNOWN=3;
 
-  const SCENES={
-    arrivee:{ npc:'안녕하세요.', fr:'Quelqu’un te salue dans le hall.', choices:[
-      {kr:'안녕하세요.', req:['안녕하세요'], note:'Tu réponds au salut.'},
-      {kr:'아니요.', req:['아니요'], note:'Tu sais le dire… mais « non » à un bonjour, c’est étrange.'},
-      {kr:'— rester muet —', req:[], note:'Toujours possible. Mais tu passes pour distant.'}
-    ]},
-    taxi:{ npc:'어디로 가세요?', fr:'Le chauffeur attend ta destination.', choices:[
-      {kr:'홍대까지 가 주세요.', req:['홍대','까지','가다','주다'], note:'La formule juste.'},
-      {kr:'홍대에서 왔어요.', req:['홍대','에서','오다'], note:'Piège : ça dit « je viens de Hongdae ».'},
-      {kr:'홍대 가.', req:['홍대','가다'], note:'Compréhensible, mais ton brutal (banmal).'}
-    ]}
+  const CH={
+    arrivee:{ titre:'Arrivée', porte:'Ton premier soir à Séoul. Dans le hall, quelqu’un te salue.',
+      npc:'안녕하세요.', fr:'(on te salue)', req:['안녕하세요','아니요'], choices:[
+        {kr:'안녕하세요.', need:['안녕하세요'], bon:'Tu réponds au salut. Un sourire te répond.'},
+        {kr:'아니요.', need:['아니요'], bon:'« Non » à un bonjour ? La personne cligne des yeux — mais tu t’es fait comprendre.'},
+        {kr:'— rester muet —', need:[], bon:'Tu ne dis rien. Tu passes pour distant, mais rien n’est cassé.'} ]},
+    taxi:{ titre:'En taxi', porte:'Tu montes à l’arrière. Le chauffeur attend ta destination.',
+      npc:'어디로 가세요?', fr:'', req:['홍대','까지','가다','주다','에서','오다'], choices:[
+        {kr:'홍대까지 가 주세요.', need:['홍대','까지','가다','주다'], bon:'« 네, 홍대. » Le compteur s’allume, la voiture démarre.'},
+        {kr:'홍대에서 왔어요.', need:['홍대','에서','오다'], bon:'Le chauffeur fronce les sourcils : tu viens de dire « je viens de Hongdae ».'},
+        {kr:'홍대 가.', need:['홍대','가다'], bon:'Ton brutal (banmal). Il te jette un regard froid et démarre sans un mot.'} ]}
   };
-  let cur='arrivee';
+  let cur='arrivee', phase='door';
+  const view=document.getElementById('view');
+  const known=(w)=>(mastery[w]||0)>=KNOWN;
 
-  function level(req){                       // -> {cls,label,missing[]}
-    if(!req.length) return {cls:'ok',label:'🟢 toujours possible',missing:[]};
-    const missing=req.filter(w=>(mastery[w]||0)<KNOWN);
-    if(missing.length===0) return {cls:'ok',label:'🟢 prêt',missing};
-    if(missing.length<=Math.floor(req.length/2)) return {cls:'warn',label:'🟠 risqué',missing};
-    return {cls:'no',label:'🔴 pas prêt',missing};
+  function readiness(req){
+    const total=req.length, ok=req.filter(known).length;
+    let cls,lab; if(ok===total){cls='ok';lab='Tes chances : élevées';}
+    else if(ok>=Math.ceil(total/2)){cls='warn';lab='Tes chances : moyennes';}
+    else {cls='no';lab='Tes chances : faibles';}
+    return {cls,lab,ok,total,icon:cls==='ok'?'🟢':cls==='warn'?'🟠':'🔴'};
   }
 
-  function render(){
-    const sc=SCENES[cur];
-    document.getElementById('npc').textContent=sc.npc;
-    document.getElementById('npcfr').textContent=sc.fr;
-    const box=document.getElementById('choices'); box.innerHTML='';
-    sc.choices.forEach(ch=>{
-      const lv=level(ch.req);
-      const reqHtml = ch.req.length
-        ? 'exige : '+ch.req.map(w=>{const ok=(mastery[w]||0)>=KNOWN;return `<b class="${ok?'':'miss'}">${w}</b>`}).join(' · ')
-        : 'n’exige aucun mot';
-      const el=document.createElement('div');
-      el.className='choice '+lv.cls;
-      el.innerHTML=`<div class="kr">${ch.kr}</div>
-        <div class="meta"><span class="req">${reqHtml}</span><span class="chip ${lv.cls}">${lv.label}</span></div>`;
-      el.onclick=()=>attempt(ch,lv);
-      box.appendChild(el);
+  function renderDoor(){
+    const ch=CH[cur], r=readiness(ch.req);
+    view.innerHTML=`<div class="door">
+      <div class="epi">제 화 · avant d’entrer</div>
+      <h2>${ch.titre}</h2>
+      <div class="story">${ch.porte}</div>
+      <div class="gauge ${r.cls}"><div class="dot">${r.icon}</div>
+        <div class="lab">${r.lab}</div><div class="cnt">${r.ok}/${r.total} mots du chapitre maîtrisés</div></div>
+      <div class="row" style="justify-content:center;margin-top:18px">
+        <button class="btn" id="rev">📚 Réviser dans l’app</button>
+      </div>
+      <div style="margin-top:12px"><button class="btn big enter" id="enter">Entrer dans le chapitre →</button></div>
+      <div class="hint">Tu peux entrer même en rouge — mais aux moments qui comptent, si tu n’es pas prêt,
+        ça sortira en charabia. À toi de juger si tu attends d’avoir révisé.</div>
+    </div>`;
+    view.querySelector('#rev').onclick=()=>{ ch.req.forEach(w=>mastery[w]=Math.min(5,(mastery[w]||0)+1)); renderDoor(); };
+    view.querySelector('#enter').onclick=()=>{ phase='inside'; renderInside(); };
+  }
+
+  function renderInside(){
+    const ch=CH[cur];
+    view.innerHTML=`<button class="back" id="back">← quitter le chapitre</button>
+      <div class="deconly">— décision · aucune aide —</div>
+      <div class="npc">${ch.npc}</div>${ch.fr?`<div class="npcfr">${ch.fr}</div>`:''}
+      <div id="ch"></div><div class="out" id="out"></div>`;
+    view.querySelector('#back').onclick=()=>{ phase='door'; renderDoor(); };
+    const box=view.querySelector('#ch');
+    ch.choices.forEach(c=>{
+      const b=document.createElement('button'); b.className='choice';
+      b.innerHTML=`<div class="kr">${c.kr}</div>`;          // AUCUNE couleur, aucun score
+      b.onclick=()=>{
+        const ready=c.need.every(known);
+        view.querySelector('#out').innerHTML = ready
+          ? `<span class="g">✓</span> ${c.bon}`
+          : `<span class="b">✕ Ça sort en charabia — tu n’étais pas prêt.</span> (Il te manquait des mots. Tu peux ressortir, réviser, et retenter.)`;
+      };
+      box.appendChild(b);
     });
-    document.getElementById('out').textContent='';
-    const total=Object.keys(mastery).filter(w=>mastery[w]>=KNOWN).length;
-    document.getElementById('score').textContent='Mots maîtrisés : '+
-      Object.keys(mastery).filter(w=>mastery[w]>=KNOWN).map(w=>w).join(', ');
-  }
-
-  function attempt(ch,lv){
-    const out=document.getElementById('out');
-    if(lv.cls==='ok') out.innerHTML=`<span class="g">✓ Tu le sors sans hésiter.</span> ${ch.note}`;
-    else if(lv.cls==='warn') out.innerHTML=`<span class="w">⚠ Tu tentes… ça passe de justesse, ou pas.</span> Tu n’es pas sûr de : ${lv.missing.join(', ')}.`;
-    else out.innerHTML=`<span class="b">✕ Tu te lances quand même — et ça sort en charabia.</span> Il te manque : ${lv.missing.join(', ')}. Tu peux aller les réviser, puis revenir.`;
   }
 
   document.getElementById('seg').addEventListener('click',e=>{
     const b=e.target.closest('button'); if(!b) return;
-    cur=b.dataset.s;
+    cur=b.dataset.c; phase='door';
     [...document.querySelectorAll('#seg button')].forEach(x=>x.classList.toggle('on',x===b));
-    render();
+    renderDoor();
   });
-  document.getElementById('revtaxi').onclick=()=>{
-    ['홍대','까지','가다','주다','에서','오다'].forEach(w=>mastery[w]=Math.min(5,(mastery[w]||0)+1));
-    render();
-    document.getElementById('out').innerHTML='<span class="w">📚 Tu as révisé. Ton score monte — regarde les couleurs bouger.</span>';
-  };
-  document.getElementById('reset').onclick=()=>{ mastery=Object.assign({},START); render(); };
-
-  render();
+  renderDoor();
 })();
 </script>
 </body>
